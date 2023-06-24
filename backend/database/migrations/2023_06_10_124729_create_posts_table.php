@@ -15,11 +15,9 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('user_id');
             $table->integer('company_id')->nullable();
-            $table->string('shop_name', 100)->nullable();
-            $table->string('product', 30);
             $table->string('title', 300);
             $table->string('slug', 300);
-            $table->longText('description');
+            $table->longText('description')->nullable();
             $table->enum('status', ['review', 'active']);
             $table->string('audio_file', 50)->nullable();
             $table->timestamps();

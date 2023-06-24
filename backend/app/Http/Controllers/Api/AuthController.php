@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -12,12 +12,6 @@ use Validator;
 
 class AuthController extends Controller
 {
-
-    public function register(): Response
-    {
-
-    }
-
     public function login(Request $request): Response
     {
         $validator = Validator::make($request->all(), [
@@ -30,7 +24,7 @@ class AuthController extends Controller
             return Response(['message' => $validator->errors()], 401);
         }
 
-        if(Auth::attempt($request->all())){
+        if(Auth::attempt(['email' => $request->email, 'password' => $request->password, 'is_verified' => true])){
 
             $user = Auth::user();
             $token =  $user->createToken('ReviewsApp')->plainTextToken;
