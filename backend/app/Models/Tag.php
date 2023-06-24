@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Admin extends Model
+class Tag extends Model
 {
-    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
@@ -15,14 +15,24 @@ class Admin extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
+        'name',
+        'is_active',
+        'created_by'
     ];
 
     /**
-     * Get the user associated with the admin.
+     * Get the user who created the post
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the posts associated with a tag.
+     */
+    public function posts() : BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'post_tags');
     }
 }
