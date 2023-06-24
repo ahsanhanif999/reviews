@@ -1,17 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '@/pages/Home.vue'
-import About from '@/pages/About.vue'
+import Home from '@/site/pages/Home.vue'
+import ReviewList from '@/site/pages/ReviewList.vue'
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
+    path: "/",
+    name: "Home",
     component: Home,
+    meta: { isUserRoute: true },
   },
   {
-    path: '/about',
-    name: 'About',
-    component: About,
+    path: '/review-list',
+    name: 'ReviewList',
+    component: ReviewList,
+    meta: { isUserRoute: true },
   },
 ]
 
