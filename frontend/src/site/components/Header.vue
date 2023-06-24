@@ -19,9 +19,9 @@
             </div>
           </div>
           <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            <button type="button" class="p-1 text-gray-400 rounded-full hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+            <button type="button" class="p-1 text-gray-400 rounded-full hover:text-white focus:outline-none">
               <span class="sr-only">View notifications</span>
-              <div class="flex gap-4">
+              <div class="flex gap-4 ">
                 <span class="p-2 px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white">Search</span>
                 <span class="p-2 px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white">Help</span>
               </div>

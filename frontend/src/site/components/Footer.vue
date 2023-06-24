@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col px-10 pt-20 text-sm text-white bg-black bg-opacity-80 sm:pl-20 ">
-        <div class="flex flex-col justify-between w-full sm:flex-row ">
+        <div class="flex flex-col justify-between w-full lg:flex-row ">
             <div class="flex flex-row w-1/3 gap-6">
                 <div class="flex flex-col gap-6 text-gray-300">
                     <span class="font-bold">Shop</span>
@@ -24,7 +24,7 @@
                     <span class="hover:cursor-pointer hover:text-white">Privacy</span>
                 </div>
             </div>
-            <div class="flex flex-row w-1/3 gap-6 pt-8 sm:pt-0">
+            <div class="flex flex-row w-1/3 gap-6 pt-8 lg:pt-0">
                 <div class="flex flex-col gap-6 text-gray-300 ">
                     <span class="font-bold">Account</span>
                     <span class="hover:cursor-pointer hover:text-white">Manage Account</span>
@@ -45,12 +45,12 @@
             <div class="mx-6">
                 <!-- Horizontal margin added here -->
             </div>
-            <div class="flex flex-col w-2/3 pt-8 sm:w-1/3 sm:pt-0">
+            <div class="flex flex-col w-2/3 pt-8 lg:w-1/3 lg:pt-0">
                 <span class="mb-6 font-bold">Signup for our newsletter</span>
                 <span class="text-gray-300">The latest deals and savings, sent to your inbox </span>
-                <div class="flex flex-col gap-4 mt-2 md:flex-row">
+                <div class="flex flex-col gap-4 mt-2 lg:flex-row">
                     <input type="text" class="p-2 text-black border rounded focus:outline-none">
-                    <span class="p-2 px-6 text-center text-white bg-indigo-600 rounded-lg">SignUp</span>
+                    <span class="p-2 px-6 text-center text-white bg-indigo-600 rounded-lg cursor-pointer hover:bg-indigo-500">SignUp</span>
                 </div>
             </div>
         </div>

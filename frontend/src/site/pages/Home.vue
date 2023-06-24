@@ -44,22 +44,22 @@
           </div>
 
           <div class="flex flex-row items-center mt-4" >
-            <span class="text-yellow-500">
+            <span class="text-yellow-300">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 20 20">
                 <path d="M10 1L12.78 6.71L18 7.8L14.47 11.79L15.65 17L10 14.25L4.35 17L5.53 11.79L2 7.8L7.22 6.71L10 1Z" />
               </svg>
             </span>
-            <span class="text-yellow-500">
+            <span class="text-yellow-300">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 20 20">
                 <path d="M10 1L12.78 6.71L18 7.8L14.47 11.79L15.65 17L10 14.25L4.35 17L5.53 11.79L2 7.8L7.22 6.71L10 1Z" />
               </svg>
             </span>
-            <span class="text-yellow-500">
+            <span class="text-yellow-300">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 20 20">
                 <path d="M10 1L12.78 6.71L18 7.8L14.47 11.79L15.65 17L10 14.25L4.35 17L5.53 11.79L2 7.8L7.22 6.71L10 1Z" />
               </svg>
             </span>
-            <span class="text-yellow-500">
+            <span class="text-yellow-300">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 20 20">
                 <path d="M10 1L12.78 6.71L18 7.8L14.47 11.79L15.65 17L10 14.25L4.35 17L5.53 11.79L2 7.8L7.22 6.71L10 1Z" />
               </svg>
@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import Review from '@/site/components/Review.vue';
+import Review from '@/site/components/home/Review.vue';
 import { ref } from 'vue';
 
 const data = ref([
