@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Http\Response;
 use App\Models\Tag;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\Api\TagResource;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Auth;
 use Str;
 
-class PostService
+class TagService
 {
     private $companyService;
     private $audioFolder = 'audio';
@@ -23,7 +24,7 @@ class PostService
         $this->companyService = $companyService;
     }
 
-    public function createTag(string $name, boolean $isActive, int $createdById): Response
+    public function createTag(string $name, bool $isActive, int $createdById): Response
     {
         $user = Auth::user();
 
@@ -41,5 +42,11 @@ class PostService
 
             return Response(['success' => false, 'message' => $ex->getMessage()], 500);
         }
+    }
+
+    public function getTags():AnonymousResourceCollection
+    {
+        $tags = Tag::all();
+        return TagResource::collection($tags);
     }
 }

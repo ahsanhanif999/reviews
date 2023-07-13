@@ -5,22 +5,20 @@ namespace App\Http\Resources\Api;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TagResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @return array<string, mixed>
+     * @return array
      */
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'slug' => $this->slug,
-            'image' => $this->image,
-            'is_active' => $this->is_active,
-            'created_by' => $this->created_by
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'email' => $this->email,
         ];
     }
-}
+}    

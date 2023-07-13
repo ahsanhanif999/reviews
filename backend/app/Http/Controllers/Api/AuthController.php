@@ -29,7 +29,7 @@ class AuthController extends Controller
             $user = Auth::user();
             $token =  $user->createToken('ReviewsApp')->plainTextToken;
 
-            return Response(['token' => $token], 200);
+            return Response(['message' => 'Login successful','token' => $token], 200);
         }
 
         return Response(['message' => 'email or password wrong'], 401);

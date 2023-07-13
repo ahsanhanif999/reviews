@@ -2,7 +2,11 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Http\Resources\Api\CompanyResource;
+use App\Http\Resources\Api\PostResource;
 use App\Models\Company;
+use App\Models\Post;
 use Str;
 
 class CompanyService
@@ -29,5 +33,22 @@ class CompanyService
         }
 
         return $companyId;
+    }
+
+        public function getAllCompanies():AnonymousResourceCollection
+    {
+        $companies = Company::all();
+        return CompanyResource::collection($companies);
+    }
+
+    public function getCompanyReviews($companyId)
+    {
+        try {
+            $company = Company::findOrFail($companyId);
+            $reviews = PostResource::collection(Post::where('company_id', $company->id)->get());
+            return $reviews;
+        } catch (\Exception $ex) {
+            throw new \Exception('Failed to retrieve company reviews');
+        }
     }
 }

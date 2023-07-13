@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\RegistrationController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\TagController;
 use App\Http\Controllers\Api\Admin\PostController as AdminPostController;
 
 /*
@@ -20,21 +21,32 @@ use App\Http\Controllers\Api\Admin\PostController as AdminPostController;
 |
 */
 
-Route::group(['middleware' => ['auth:sanctum']], function () {
 
+
+Route::prefix('company')->group(function(){ 
+    Route::get('list', [CompanyController::class, 'index'])->name('company.list');
+    Route::get('reviews/{id}', [CompanyController::class, 'show'])->name('company.posts');
+});
+
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    
     Route::prefix('user')->group(function(){
         Route::get('show', [UserController::class, 'show'])->name('user.show');
     });
-
-    Route::prefix('company')->group(function(){
-        Route::get('list', [CompanyController::class, 'index'])->name('company.list');
-    });
-
+    
     Route::prefix('post')->group(function(){
         Route::post('create', [PostController::class, 'store'])->name('post.create');
+        Route::get('{type?}/{tag?}', [PostController::class, 'index'])->name('post.index');
         Route::get('read/{id}', [PostController::class, 'show'])->name('post.show');
         Route::put('update/{id}', [PostController::class, 'update'])->name('post.update');
     });
+
+    Route::prefix('tag')->group(function(){ 
+        Route::get('list', [TagController::class, 'index'])->name('tag.list');
+        Route::post('create', [TagController::class, 'create'])->name('tag.create');
+    });
+    
 
     Route::prefix('admin')->group(function(){
 

@@ -11,6 +11,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Resources\Api\PostResource;
 use Illuminate\Support\Facades\Storage;
+use App\Services\TagService;
 
 use Auth;
 use Str;
@@ -22,7 +23,7 @@ class PostService
     private $audioFolder = 'audio';
     private $uploadDisk = 'public';
 
-    public function __construct(CompanyService $companyService)
+    public function __construct(CompanyService $companyService, TagService $tagService)
     {
         $this->companyService = $companyService;
         $this->tagService = $tagService;
