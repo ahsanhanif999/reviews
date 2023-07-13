@@ -43,7 +43,7 @@
                                     <ComboboxOption v-for="company in filteredCompany" :key="company.id" :value="company" as="template" v-slot="{ active, selected }">
                                         <li :class="['relative cursor-default select-none py-2 pl-3 pr-9', active ? 'bg-indigo-600 text-white' : 'text-gray-900']">
                                             <div class="flex flex-row gap-2">
-                                              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" class="w-6 h-6 rounded-full" alt="">
+                                              <img :src="(`/assets/images/${company.logo}`)" class="w-6 h-6 rounded-full" alt="">
                                               <span :class="['block truncate', selected && 'font-semibold']">
                                                   {{ company.name }}
                                               </span>
@@ -119,6 +119,21 @@
                         </span>
                       </div>
                     </div>
+                    <div class="flex flex-col w-full mt-8">
+                      <label class="text-sm text-gray-600">Add file:</label>
+                      <div class="flex flex-col w-full gap-2">
+                        <label v-if="fileInputText" for="fileInput" class="w-full px-4 py-2 mt-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm cursor-pointer hover:border-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                          {{ fileInputText }}
+                        </label>
+                        <input id="fileInput" type="file" multiple @change="handleFileUpload" class="hidden">
+                        <button @click="uploadImages" class="w-full p-2 mt-2 text-sm leading-4 text-white bg-indigo-500 rounded-md shadow-sm hover:bg-indigo-400">
+                          Upload
+                        </button>
+                      </div>
+                      <div v-for="image in uploadedImages" :key="image.id">
+                        <img :src="image.url" alt="Uploaded Image">
+                      </div>
+                    </div>
                     
                 </div>
                 <div class="flex flex-col md:my-8">
@@ -150,74 +165,129 @@
                         <textarea v-model="experience" class="w-full p-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-indigo-600" rows="4"></textarea>
                     </div>
                 </div>
+                <div class="flex justify-center w-full my-6">
+                    <span class="w-full p-2 text-center text-white bg-indigo-600 rounded cursor-pointer hover:bg-indigo-500">Post Review</span>
+                </div>
             </div>
             <div class="w-full my-4 md:my-8 md:w-3/6 ">
-                <Preview  :filledCount="filledCount" :customCountry="customCountry" :selectedTag="selectedTag" :customTag="customTag" :selectedCompany="selectedCompany"  :activeDiv="activeDiv" :experience="experience" :summary="summary"/>
+                <Preview @response="userId"  :filledCount="filledCount" :customCountry="customCountry" :selectedTag="selectedTag" :customTag="customTag" :selectedCompany="selectedCompany"  :activeDiv="activeDiv" :experience="experience" :summary="summary"/>
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import Preview from "@/site/components/createReview/Preview.vue"
-import { onMounted, ref } from 'vue';
-import { computed } from 'vue'
+import { Combobox, ComboboxButton, ComboboxInput, ComboboxLabel, ComboboxOption, ComboboxOptions,} from '@headlessui/vue'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
-import {
-  Combobox,
-  ComboboxButton,
-  ComboboxInput,
-  ComboboxLabel,
-  ComboboxOption,
-  ComboboxOptions,
-} from '@headlessui/vue'
+import Preview from "@/site/components/createReview/Preview.vue"
+import { onMounted, ref } from 'vue'
+import { computed } from 'vue'
+import { useStore } from 'vuex';
 
-const selectedCompany = ref('');
-const customCountry = ref('');
-const selectedTag = ref([]);
-const customTag = ref('');
-const tagDropdownOpen = ref(false);
+const uploadedImages = ref([]);
+const selectedFiles = ref([]);
+const fileInputText = ref('Choose File');
+
+const handleFileUpload = (event) => {
+  selectedFiles.value = Array.from(event.target.files);
+  fileInputText.value = selectedFiles.value.map(file => file.name).join(', ');
+};
+
+const uploadImages = () => {
+  const formData = new FormData();
+  selectedFiles.value.forEach((file) => {
+    formData.append('images[]', file);
+  });
+}
+
+const store = useStore()
+const token = ref(localStorage.getItem('reviewAccessToken'))
+const tagDropdownOpen = ref(false)
+const selectedCompany = ref('')
+const customCountry = ref('')
+const selectedTag = ref([])
+const filledCount = ref(0)
+const experience = ref('')
+const customTag = ref('')
+const tagquery = ref('')
+const activeDiv = ref(1)
+const summary = ref('')
+const div1 = ref(null)
+const div2 = ref(null)
+const query = ref('')
+const company = ref([])
+const tag = ref([])
+const loginUserId = ref('')
+
+const userId = (data) =>{
+  loginUserId.value = data
+}
+
+const stars = ref([
+  { filled: false, highlighted: false },
+  { filled: false, highlighted: false },
+  { filled: false, highlighted: false },
+  { filled: false, highlighted: false },
+  { filled: false, highlighted: false },
+]);
+
+store.dispatch('getCompany', token.value)
+  .then((response) => {
+    company.value = response.data.companies
+  })
+  .catch((error) => {
+    console.log(error)
+  });
+
+  
+const filteredCompany = computed(() =>
+query.value === ''
+? company.value
+: company.value.filter((company) => {
+  return company.name.toLowerCase().includes(query.value.toLowerCase())
+})
+)
+
+const getTag = () => { 
+store.dispatch('getTagList', token.value)
+  .then((response) => {
+    tag.value = response.data.tags
+  })
+  .catch((error) => {
+    console.log(error)
+  });
+}
+
+// For tags dropdown
+const filteredTag = computed(() =>
+  tagquery.value === ''
+    ? tag.value
+    : tag.value.filter((tag) => {
+        return tag.name.toLowerCase().includes(tagquery.value.toLowerCase())
+      })
+)
 
 const closeDropdown = () => {
   tagDropdownOpen.value = false;
 };
 
-
-const company = [
-  { id: 1, name: 'Nike' },
-  { id: 2, name: 'Adidas' },
-  { id: 3, name: 'Polo' },
-  { id: 4, name: 'Borjan' },
-  { id: 5, name: 'J.' },
-  { id: 6, name: 'MTJ' },
-  { id: 7, name: 'Alias' },
-  { id: 8, name: 'KFC' },
-
-]
-
-const tag = [
-  { id: 1, name: 'Tag1' },
-  { id: 2, name: 'Tag2' },
-  { id: 3, name: 'Tag3' },
-  { id: 4, name: 'Tag4' },
-  { id: 5, name: 'Tag5' },
-  { id: 6, name: 'Tag6' },
-  { id: 7, name: 'Tag7' },
-  { id: 8, name: 'Tag8' },
-
-]
-
-const query = ref('')
-const filteredCompany = computed(() =>
-query.value === ''
-? company
-: company.filter((company) => {
-  return company.name.toLowerCase().includes(query.value.toLowerCase())
-})
-)
-
-
-function updateSelectedTags() {
+const updateSelectedTags = () => {
+  if (customTag.value !== '') {
+  let tagData = {
+    name : customTag.value,
+    created_by : loginUserId.value
+  }
+  store.dispatch('createTag',{ token: token.value, tagData })
+  .then((response) => {
+    console.log(response)
+    if(response.status === 201){
+      getTag()
+    }
+    })
+  .catch((error) => {
+    console.log(error)
+    });
+  }
   if (customTag.value.trim() !== '') {
     selectedTag.value.push({ id: selectedTag.value.length + 1, name: customTag.value.trim() });
     customTag.value = ''
@@ -230,42 +300,6 @@ function removeTag(tag) {
     selectedTag.value = [...selectedTag.value.slice(0, index), ...selectedTag.value.slice(index + 1)];
   }
 }
-// For tags dropdown
-const tagquery = ref('')
-const filteredTag = computed(() =>
-  tagquery.value === ''
-    ? tag
-    : tag.filter((tag) => {
-        return tag.name.toLowerCase().includes(tagquery.value.toLowerCase())
-      })
-)
-
-
-
-const activeDiv = ref(1);
-const div1 = ref(null);
-const div2 = ref(null);
-const summary = ref('')
-// const product = ref('')
-const experience = ref('')
-const filledCount = ref(0);
-
-const countries = [
-  { code: 'us', name: 'United States' },
-  { code: 'ca', name: 'Canada' },
-  { code: 'gb', name: 'United Kingdom' },
-  // Add more countries as needed
-];
-
-
-
-const stars = ref([
-  { filled: false, highlighted: false },
-  { filled: false, highlighted: false },
-  { filled: false, highlighted: false },
-  { filled: false, highlighted: false },
-  { filled: false, highlighted: false },
-]);
 
 const highlightStars = (index) => {
   for (let i = 0; i <= index; i++) {
@@ -291,10 +325,6 @@ const toggleFill = (index) => {
   filledCount.value = stars.value.filter((star) => star.filled).length;
 };
 
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside);
-});
-
 function toggleActive(id) {
   activeDiv.value = id;
 }
@@ -303,5 +333,11 @@ function handleClickOutside(event) {
   if (event.target !== div1.value && event.target !== div2.value) {
   }
 }
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+  getTag()
+});
+
 
 </script>

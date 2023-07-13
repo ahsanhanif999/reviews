@@ -18,7 +18,7 @@
               </div>
             </div>
           </div>
-          <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+          <div class="absolute inset-y-0 right-0 flex items-center gap-4 pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <button type="button" class="p-1 text-gray-400 rounded-full hover:text-white focus:outline-none">
               <span class="sr-only">View notifications</span>
               <div class="flex gap-4 ">
@@ -28,27 +28,34 @@
             </button>
   
             <!-- Profile dropdown -->
-            <Menu as="div" class="relative ml-3">
-              <div>
-                <MenuButton class="flex text-sm bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                  
-                  <img class="w-8 h-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
-                </MenuButton>
+            <div class="flex flex-row items-center gap-4">
+              <div v-if="isLoggedIn == false">
+                  <RouterLink :to="{name:'Login'}" class="p-2 px-3 py-2 text-sm font-medium text-gray-300 rounded-md cursor-pointer hover:bg-gray-700 hover:text-white">
+                    Log in
+                  </RouterLink>
               </div>
-              <transition enter-active-class="transition duration-100 ease-out" enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100" leave-active-class="transition duration-75 ease-in" leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-95 opacity-0">
-                <MenuItems class="absolute right-0 z-10 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <MenuItem v-slot="{ active }">
-                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Your Profile</a>
-                  </MenuItem>
-                  <MenuItem v-slot="{ active }">
-                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Settings</a>
-                  </MenuItem>
-                  <MenuItem v-slot="{ active }">
-                    <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Sign out</a>
-                  </MenuItem>
-                </MenuItems>
-              </transition>
-            </Menu>
+              <Menu as="div" class="relative ml-3" v-if="isLoggedIn == true">
+                <div>
+                  <MenuButton class="flex text-sm bg-gray-800 rounded-full focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+              
+                    <img class="w-8 h-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                  </MenuButton>
+                </div>
+                <transition enter-active-class="transition duration-100 ease-out" enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100" leave-active-class="transition duration-75 ease-in" leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-95 opacity-0">
+                  <MenuItems class="absolute right-0 z-10 w-48 py-1 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <MenuItem v-slot="{ active }">
+                      <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Your Profile</a>
+                    </MenuItem>
+                    <MenuItem v-slot="{ active }">
+                      <a href="#" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">Settings</a>
+                    </MenuItem>
+                    <MenuItem v-slot="{ active }">
+                      <span @click="proceedLogout" :class="[active ? 'bg-gray-100' : '', 'cursor-pointer block px-4 py-2 text-sm text-gray-700']">Sign out</span>
+                    </MenuItem>
+                  </MenuItems>
+                </transition>
+              </Menu>
+            </div>
           </div>
         </div>
       </div>
@@ -64,8 +71,23 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import Auth from "@/composables/Auth"
 import { ref } from 'vue'
-  
+
+const {logout} = Auth()
+const token = ref(localStorage.getItem('reviewAccessToken'))
+const isLoggedIn = ref(token.value !== null && token.value != '' ? true : false)
+
+console.log(token.value)
+
+const proceedLogout = () => {
+  logout(token.value).then((response)=>{
+    if(response.status === 200){
+      isLoggedIn.value = false
+    }
+  })
+}
+
 const navigation = ref([
   { name: 'Women', href: '#', current: true },
   { name: 'Men', href: '#', current: false },

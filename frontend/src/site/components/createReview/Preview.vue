@@ -11,11 +11,12 @@
               <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80" alt="">
             </div>
             <div class="flex flex-col">
-              <span class="">John Doe</span>
-              <span class="text-sm text-gray-500">26, July 2023</span>
+              <span class="">{{ userData.name }}</span>
+              <!-- TODO: make the date dynamic -->
+              <span class="text-sm text-gray-500">26, July 2023</span> 
             </div>
           </div>
-            <div class="flex flex-col ml-12">
+            <div class="flex flex-col sm:ml-12">
                 <div class="flex flex-row">
                     <span v-for="(star, index) in 5" :key="index" class="mt-4" :class="starClass(index)">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-current" viewBox="0 0 20 20">
@@ -52,9 +53,6 @@
                     </div>
                 </div>
                 <hr class="mt-4">
-                <div class="flex justify-center w-full my-6">
-                    <span class="w-full p-2 text-center text-white bg-indigo-600 rounded cursor-pointer hover:bg-indigo-500">Post Review</span>
-                </div>
             </div>
         </div>
     </div>
@@ -62,12 +60,30 @@
 
 <script setup>
 import { computed, ref, toRef, watch } from 'vue';
+import { useStore } from 'vuex';
 
+const emits = defineEmits(['response']);
+const store = useStore()
 const recording = ref(false);
 const audioBlob = ref(null);
 const audioBlobUrl = ref('');
+const userData = ref({
+  name : '',
+  created_at:''
+})
+const token = ref(localStorage.getItem('reviewAccessToken'))
 
-
+store.dispatch('getLoginUser', token.value)
+  .then((response) => {
+    userData.value.name = response.data.user.first_name + ' ' + response.data.user.last_name
+    userData.value.created_at = response.data.user.updated_at
+    if(response.status == 200){
+        emits('response', response.data.user.id);
+    }
+  })
+  .catch((error) => {
+    console.log(error)
+  });
 
 let mediaRecorder;
 let chunks = [];
